@@ -9,7 +9,20 @@ public class HeroEntity : MonoBehaviour
     [SerializeField] private HeroHorizontalMovementSettings _movementsSettings;
     private float _horizontalSpeed = 0f;
     private float _moveDirX = 0f;
-    //private bool canDash=true;
+
+    [Header("Dash")]
+    [SerializeField] private HeroDashSettings _dashSettings;
+    public bool IsDashing = false; 
+
+    // enum DashState
+    // {
+    //     inAir,
+    //     OnGround,
+    // }
+    //private DashState _dashState= DashState.inAir;
+
+    private float _dashTimer;
+    private TrailRenderer tr;
 
     [Header("Orientation")]
     [SerializeField] private Transform _orientVisualRoot;
@@ -28,6 +41,7 @@ public class HeroEntity : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private HeroJumpSettings _jumpSettings;
     [SerializeField] private HeroFallSettings _jumpFallSettings;
+    [SerializeField] private HeroJumpHorizontalMovementSettings _jumpHorizontalMovementSettings;
 
     enum JumpState
     {
@@ -42,6 +56,9 @@ public class HeroEntity : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
 
+    private void Awake(){
+        tr = GetComponent<TrailRenderer>();
+    }
 
     public void SetMoveDirX(float dirX)
     {
@@ -59,37 +76,42 @@ public class HeroEntity : MonoBehaviour
             _ChangeOrientFromHorizontalMovement();
         }
 
-        if (IsJumping){
+        if (IsJumping && !IsDashing){
             _UpdateJump();
         } else {
             if(!IsTouchingGround)
-            {    
-                _ApplyFallGravity(_fallSettings);
+            { 
+                _ApplyFallGravity(_fallSettings); 
             }
             else {
                 _ResetVerticalSpeed();
             }
-        }    
+        }
+
+        // if (IsDashing){
+        //     _UpdateDashState();    
+        // }
 
         _ApplyHorizontalSpeed();
         _ApplyVerticalSpeed();
     }
 
     private void _UpdateHorizontalSpeed(){
-            if(_moveDirX != 0f){
-                // if(Input.GetKey(KeyCode.E) && canDash){
-                //     _Dash();
-                //     canDash=false;
-                //     Invoke("_StopDash()", 2f);
-                // }
-                // else {  
-                    _Accelerate();
-                //}
+        if(IsDashing){
+            Dash(); //à vérif
+            //Dash(_dashState);
+        }
+        else{
+            if(_moveDirX != 0f)
+            {
+                _Accelerate(); 
             }
-            else{
+            else
+            {
                 _Decelerate();
             }
         }
+    }
     
     private void _Accelerate(){
         _horizontalSpeed += _movementsSettings.acceleration * Time.fixedDeltaTime;
@@ -105,16 +127,48 @@ public class HeroEntity : MonoBehaviour
         }
     }
 
-    // private void _Dash(){
-    //     _horizontalSpeed += _movementsSettings.dash * Time.fixedDeltaTime;
-    //     if(_horizontalSpeed > _movementsSettings.dashMax){  
-    //         _Accelerate();
+    // private void _UpdateDash(){
+    //     switch(_dashState){
+    //         case DashState.inAir:
+    //             _UpdateDashState(speed);
+    //             break;
+
+    //         case DashState.onGround:
+    //             _UpdateDashState(onGroundSpeed);
+    //             break;
     //     }
     // }
 
-    // void _StopDash(){
-    //     canDash=true;
+    //public void Dash(float dashStateSpeed){
+    public void Dash(){
+        //_GetDashState();
+        _dashTimer += Time.fixedDeltaTime;
+        if(_dashTimer < _dashSettings.duration){
+            _ResetVerticalSpeed();
+            IsDashing = true; 
+            tr.emitting = true;
+            _horizontalSpeed = _dashSettings.speed;
+            // _horizontalSpeed = _dashSettings.dashStateSpeed;
+        } 
+        else {
+            IsDashing = false;
+            tr.emitting = false;
+            _dashTimer = 0;
+            _ResetHorizontalSpeed();
+        }
+    }
+
+    // private void _GetDashState(){
+    //     if (IsTouchingGround){
+    //         _dashState=DashState.onGroud;
+    //     } else{
+    //         _dashState=DashState.inAir;
+    //     }
     // }
+    
+    private void _ResetHorizontalSpeed(){
+        _horizontalSpeed = 0f;
+    }
 
     private void _ChangeOrientFromHorizontalMovement(){
         if(_moveDirX == 0f) return ; // et si pas d'accolades le if execute juste la ligne d'apres 

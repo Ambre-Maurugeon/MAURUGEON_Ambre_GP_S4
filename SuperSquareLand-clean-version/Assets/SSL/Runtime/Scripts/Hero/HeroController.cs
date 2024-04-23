@@ -22,6 +22,11 @@ public class HeroController : MonoBehaviour
                 _entity.StopJumpImpulsion();
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.E)){
+            _entity.Dash();
+            //_entity.Dash(_dashState);
+        }
     }
 
     private float GetInputMoveX(){
