@@ -10,6 +10,12 @@ public class HeroController : MonoBehaviour
 
     private void Update (){
         _entity.SetMoveDirX(GetInputMoveX());
+
+        if (Input.GetKeyDown(KeyCode.Space)){
+            if(_entity.IsTouchingGround && !_entity.IsJumping){
+                _entity.JumpStart();
+            }
+        } 
     }
 
     private float GetInputMoveX(){
