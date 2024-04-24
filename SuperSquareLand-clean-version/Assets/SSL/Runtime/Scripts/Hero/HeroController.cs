@@ -24,8 +24,8 @@ public class HeroController : MonoBehaviour
         }
 
         if(Input.GetKeyDown(KeyCode.E)){
-            _entity.Dash();
-            //_entity.Dash(_dashState);
+            //_entity.Dash();
+            _entity.Dash(_entity.dashSettings);
         }
     }
 

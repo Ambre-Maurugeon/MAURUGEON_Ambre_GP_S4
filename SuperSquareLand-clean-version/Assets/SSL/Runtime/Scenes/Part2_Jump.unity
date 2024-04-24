@@ -1078,6 +1078,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _dashSettingsInAir.speed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _jumpFallSettings.fallGravity
       value: 60
       objectReference: {fileID: 0}
@@ -1094,8 +1098,20 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _airHorizontalMovementsSettings.speedMax
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _airHorizontalMovementsSettings.deceleration
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _jumpHorizontalMovementSettings.acceleration
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _airHorizontalMovementsSettings.turnBackFrictions
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: m_Name
