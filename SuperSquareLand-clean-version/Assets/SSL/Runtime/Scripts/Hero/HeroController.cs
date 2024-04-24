@@ -54,7 +54,7 @@ public class HeroController : MonoBehaviour
         }
 
         if(Input.GetKeyDown(KeyCode.E)){
-            _entity.Dash(_entity.dashSettings);
+            _entity.Dash(_entity.dashSettings, _entity.horizontalMovementSettings);
         }
 
         _entityWasTouchingGround = _entity.IsTouchingGround;
