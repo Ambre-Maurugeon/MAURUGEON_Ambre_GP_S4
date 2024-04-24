@@ -5,6 +5,12 @@ public class HeroController : MonoBehaviour
     [Header("Entity")]
     [SerializeField] private HeroEntity _entity;
 
+    private bool _entityWasTouchingGround = false;
+
+    [Header("Coyote Time")]
+    [SerializeField] private float _coyoteTimeDuration = 0.2f;
+    private float _coyoteTimeCountdown = -1f;
+
     [Header("Jump Buffer")]
     [SerializeField] private float _jumpBufferDuration =0.2f;
     private float _jumpBufferTimer = 0f;
@@ -21,8 +27,14 @@ public class HeroController : MonoBehaviour
 
         _entity.SetMoveDirX(GetInputMoveX());
 
+        if (_EntityHasExitGround()){
+            _ResetCoyoteTime();
+        } else {
+            _UpdateCoyoteTime();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space)){
-            if(_entity.IsTouchingGround && !_entity.IsJumping){
+            if((_entity.IsTouchingGround || _IsCoyoteTimeActive()) && !_entity.IsJumping){
                 _entity.JumpStart();
             } else {
                 _ResetJumpBuffer();
@@ -30,7 +42,7 @@ public class HeroController : MonoBehaviour
         } 
 
         if(IsJumpBufferActive()){
-            if(_entity.IsTouchingGround && !_entity.IsJumping){
+            if((_entity.IsTouchingGround || _IsCoyoteTimeActive()) && !_entity.IsJumping){
                 _entity.JumpStart();
             }
         }
@@ -44,6 +56,8 @@ public class HeroController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.E)){
             _entity.Dash(_entity.dashSettings);
         }
+
+        _entityWasTouchingGround = _entity.IsTouchingGround;
     }
 
     private float GetInputMoveX(){
@@ -57,6 +71,7 @@ public class HeroController : MonoBehaviour
         return InputMoveX;
     }
 
+//Jump Buffer
     private void _ResetJumpBuffer(){
         _jumpBufferTimer=0f;
     }
@@ -74,6 +89,24 @@ public class HeroController : MonoBehaviour
         _jumpBufferTimer = _jumpBufferDuration;
     }
 
+    private bool _EntityHasExitGround(){
+        return _entityWasTouchingGround && !_entity.IsTouchingGround;
+    }
+
+//Coyote Time
+    private void _UpdateCoyoteTime(){
+        if(!_IsCoyoteTimeActive()) return;
+        _coyoteTimeCountdown -= Time.deltaTime; // 3 2 1 (décompte décroissant)
+    }
+
+    private void _ResetCoyoteTime(){
+        _coyoteTimeCountdown = _coyoteTimeDuration;
+    }
+
+    private bool _IsCoyoteTimeActive(){
+        return _coyoteTimeCountdown > 0f;
+    }
+
 //Debug
     private void OnGUI()
     {
@@ -82,6 +115,7 @@ public class HeroController : MonoBehaviour
         GUILayout.BeginVertical(GUI.skin.box);
         GUILayout.Label(gameObject.name);
         GUILayout.Label("Jump Buffer Timer = " + _jumpBufferTimer);
+        GUILayout.Label("CoyoteTime Countdown = " + _coyoteTimeCountdown);
         GUILayout.EndVertical();
     }
 }
