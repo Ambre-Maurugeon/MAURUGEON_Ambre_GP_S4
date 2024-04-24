@@ -1288,14 +1288,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2291467637801821567, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6075471
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291467637801821567, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: m_Color.g
+      value: 0.2235314
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291467637801821567, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: m_Color.r
+      value: 0.4083074
+      objectReference: {fileID: 0}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _guiDebug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _wallDetector
+      value: 
+      objectReference: {fileID: 732721623840024187}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _groundDetector
       value: 
       objectReference: {fileID: 732721623840024184}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _slidingVerticalSpeed
+      value: -1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _jumpSettings.jumpSpeed
       value: 8
@@ -1303,6 +1323,10 @@ PrefabInstance:
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _dashSettingsInAir.speed
       value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      propertyPath: _downSlidingVerticalSpeed
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: _jumpFallSettings.fallGravity
@@ -1360,10 +1384,10 @@ PrefabInstance:
       addedObject: {fileID: 732721623840024184}
     - targetCorrespondingSourceObject: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 732721623840024186}
+      addedObject: {fileID: 732721623840024187}
     - targetCorrespondingSourceObject: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 732721623840024187}
+      addedObject: {fileID: 732721623840024186}
   m_SourcePrefab: {fileID: 100100000, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
 --- !u!4 &732721623840024182 stripped
 Transform:
@@ -1463,7 +1487,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.54069006, g: 0.44449264, b: 0.6150943, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -1522,7 +1546,7 @@ MonoBehaviour:
   - {fileID: 1107081821}
   - {fileID: 38423562}
   - {fileID: 1518231644}
-  _detectionLength: 0.1
+  _detectionLength: 0.05
   _wallLayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1540,7 +1564,7 @@ PrefabInstance:
       objectReference: {fileID: 2055032675}
     - target: {fileID: 2715573749518700230, guid: 6ad9f89a1de0f6849aa1265154727cfe, type: 3}
       propertyPath: _guiDebug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2715573749518700230, guid: 6ad9f89a1de0f6849aa1265154727cfe, type: 3}
       propertyPath: _jumpBufferDuration

@@ -8,9 +8,13 @@ public class HeroEntity : MonoBehaviour
 
     [Header("Horizontal Movements")]
     [FormerlySerializedAs("_movementsSettings")]
-    public HeroHorizontalMovementsSettings horizontalMovementSettings;
+
     [SerializeField] private HeroHorizontalMovementsSettings _groundHorizontalMovementsSettings;
     [SerializeField] private HeroHorizontalMovementsSettings _airHorizontalMovementsSettings;
+
+    [HideInInspector]
+    public HeroHorizontalMovementsSettings horizontalMovementSettings;
+
     private float _horizontalSpeed = 0f;
     private float _moveDirX = 0f;
 
@@ -18,10 +22,12 @@ public class HeroEntity : MonoBehaviour
     [FormerlySerializedAs("_dashSettings")]
     [SerializeField] private HeroDashSettings _dashSettingsOnGround;
     [SerializeField] private HeroDashSettings _dashSettingsInAir;
-    public bool IsDashing = false; 
-    public HeroDashSettings dashSettings;
 
-    //private DashState _dashState= DashState.inAir;
+    [HideInInspector]
+    public bool IsDashing = false;
+
+    [HideInInspector] 
+    public HeroDashSettings dashSettings;
 
     private float _dashTimer;
     private TrailRenderer tr;
@@ -40,11 +46,14 @@ public class HeroEntity : MonoBehaviour
     [Header("Fall")]
     [SerializeField] private HeroFallSettings _fallSettings;
 
+    [Header("Sliding")]
+    [SerializeField] private float _normalSlidingVerticalSpeed = -1.2f;
+    [SerializeField] private float _downSlidingVerticalSpeed = -10f;
+
     [Header("Jump")]
     [SerializeField] private HeroJumpSettings _jumpSettings;
     [SerializeField] private HeroFallSettings _jumpFallSettings;
     [SerializeField] private HeroJumpHorizontalMovementSettings _jumpHorizontalMovementSettings;
-
     enum JumpState
     {
         NotJumping,
@@ -55,8 +64,15 @@ public class HeroEntity : MonoBehaviour
     private JumpState _jumpState = JumpState.NotJumping;
     private float _jumpTimer;
 
+
+    [Header("Wall Jump")]
+    [SerializeField] private WallDetector _wallDetector;
+    public bool IsTouchingWall {get; private set;}
+    
+
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
+
 
     private void Awake(){
         tr = GetComponent<TrailRenderer>();
@@ -70,9 +86,11 @@ public class HeroEntity : MonoBehaviour
     private void FixedUpdate()
     {
         _ApplyGroundDetection();
-
+        _ApplyWallDetection();
+        
         horizontalMovementSettings = _GetCurrentHorizontalMovementSettings();
         dashSettings = _GetCurrentDashSettings();
+
         if(_AreOrientAndMovementOpposite()){
             _TurnBack(horizontalMovementSettings);
         } else{   
@@ -92,18 +110,22 @@ public class HeroEntity : MonoBehaviour
             }
         }
 
-        // if (IsDashing){
-        //     _UpdateDashState();    
-        // }
+        if(IsSliding){
+            if(Input.GetKey(KeyCode.S)){
+                _ApplySlidingGravity(_downSlidingVerticalSpeed);
+            }else{
+                _ApplySlidingGravity(_normalSlidingVerticalSpeed);
+            }
+        }
 
         _ApplyHorizontalSpeed();
         _ApplyVerticalSpeed();
+        
     }
 
     private void _UpdateHorizontalSpeed(HeroHorizontalMovementsSettings settings, HeroDashSettings _dashSettings){
         if(IsDashing){
             Dash(_dashSettings, settings); //à vérif
-            //Dash(_dashState);
         }
         else{
             if(_moveDirX != 0f)
@@ -131,20 +153,21 @@ public class HeroEntity : MonoBehaviour
         }
     }
 
-
+//Dash
     private HeroDashSettings _GetCurrentDashSettings(){
-            return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
+        return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
     }
 
     public void Dash(HeroDashSettings _dashSettings, HeroHorizontalMovementsSettings _mvtSettings){
         
         _dashTimer += Time.fixedDeltaTime;
         if(_dashTimer < _dashSettings.duration){
-            _ResetVerticalSpeed();
             IsDashing = true; 
-            tr.emitting = true;
+            _ResetVerticalSpeed();
             _horizontalSpeed = _dashSettings.speed;
-        } 
+            
+            tr.emitting = true;
+        }
         else {
             IsDashing = false;
             tr.emitting = false;
@@ -158,6 +181,7 @@ public class HeroEntity : MonoBehaviour
         _orientX = Mathf.Sign(_moveDirX);
     }
 
+//Vertical Settings
     private void _ApplyFallGravity(HeroFallSettings settings){
         _verticalSpeed -= settings.fallGravity * Time.fixedDeltaTime;
         if (_verticalSpeed < -settings.fallSpeedMax){
@@ -173,16 +197,16 @@ public class HeroEntity : MonoBehaviour
         _verticalSpeed = 0f;
     }
 
-    private void _ApplyHorizontalSpeed()
-    {
-        Vector2 velocity = _rigidbody.velocity;
-        velocity.x = _horizontalSpeed*_orientX;
-        _rigidbody.velocity = velocity;
-    }
-
     private void _ApplyVerticalSpeed(){
         Vector2 velocity = _rigidbody.velocity;
         velocity.y = _verticalSpeed;
+        _rigidbody.velocity = velocity;
+    }
+
+     private void _ApplyHorizontalSpeed()
+    {
+        Vector2 velocity = _rigidbody.velocity;
+        velocity.x = _horizontalSpeed*_orientX;
         _rigidbody.velocity = velocity;
     }
 
@@ -214,6 +238,8 @@ public class HeroEntity : MonoBehaviour
         newScale.x = _orientX;
         _orientVisualRoot.localScale = newScale;
     }
+
+    //Jump
 
     private void _UpdateJump(){
         switch(_jumpState){
@@ -258,9 +284,23 @@ public class HeroEntity : MonoBehaviour
 
     public bool IsJumpImpulsing => _jumpState == JumpState.JumpImpulsion;
     public bool IsJumpMinDurationReached => _jumpTimer >= _jumpSettings.jumpMinDuration;
-
     public bool IsJumping => _jumpState != JumpState.NotJumping;
 
+    //Slide
+    private void _ApplyWallDetection(){
+        IsTouchingWall = _wallDetector.DetectWallNearBy();
+    }
+
+    public bool IsSliding => IsTouchingWall && !IsTouchingGround;
+
+    private void _ApplySlidingGravity(float slidingVerticalSpeed){
+        _ResetVerticalSpeed();
+        _verticalSpeed = slidingVerticalSpeed;
+    }
+
+    //Wall Jump
+
+    //Debug
     private void OnGUI()
     {
         if (!_guiDebug) return;

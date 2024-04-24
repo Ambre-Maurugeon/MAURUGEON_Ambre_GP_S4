@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GroundDetector : MonoBehaviour
 {
-    [Header("Detection")]
+    [Header("Ground Detection")]
     [SerializeField] private Transform[] _detectionPoints;
     [SerializeField] private float _detectionLength = 0.1f;
     [SerializeField] private LayerMask _groundLayerMask;
