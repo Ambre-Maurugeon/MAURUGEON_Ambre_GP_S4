@@ -65,10 +65,12 @@ public class HeroEntity : MonoBehaviour
     private float _jumpTimer;
 
 
-    [Header("Wall Jump")]
+    [Header("Wall")]
     [SerializeField] private WallDetector _wallDetector;
     public bool IsTouchingWall {get; private set;}
     
+    [Header("Wall Jump")]
+    [SerializeField] private HeroWallJumpSettings _wallJumpSettings;
 
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
@@ -93,8 +95,13 @@ public class HeroEntity : MonoBehaviour
 
         if(_AreOrientAndMovementOpposite()){
             _TurnBack(horizontalMovementSettings);
-        } else{   
-            _UpdateHorizontalSpeed(horizontalMovementSettings, dashSettings);
+        } else{
+            if(IsDashing){
+                Dash(dashSettings, horizontalMovementSettings); //à vérif
+            } else{
+                _UpdateHorizontalSpeed(horizontalMovementSettings);
+            }
+
             _ChangeOrientFromHorizontalMovement();
         }
 
@@ -123,19 +130,14 @@ public class HeroEntity : MonoBehaviour
         
     }
 
-    private void _UpdateHorizontalSpeed(HeroHorizontalMovementsSettings settings, HeroDashSettings _dashSettings){
-        if(IsDashing){
-            Dash(_dashSettings, settings); //à vérif
+    private void _UpdateHorizontalSpeed(HeroHorizontalMovementsSettings settings){
+        if(_moveDirX != 0f)
+        {
+            _Accelerate(settings); 
         }
-        else{
-            if(_moveDirX != 0f)
-            {
-                _Accelerate(settings); 
-            }
-            else
-            {
-                _Decelerate(settings);
-            }
+        else
+        {
+            _Decelerate(settings);
         }
     }
     
@@ -176,6 +178,7 @@ public class HeroEntity : MonoBehaviour
         }
     }
 
+//
     private void _ChangeOrientFromHorizontalMovement(){
         if(_moveDirX == 0f) return ; // et si pas d'accolades le if execute juste la ligne d'apres 
         _orientX = Mathf.Sign(_moveDirX);
@@ -299,6 +302,16 @@ public class HeroEntity : MonoBehaviour
     }
 
     //Wall Jump
+
+    // if(isSliding){
+    //     wallJump
+    // }
+
+    // //si il slide 
+    // if input.GetKey(KeyCode.Escape){
+
+    // }
+
 
     //Debug
     private void OnGUI()
