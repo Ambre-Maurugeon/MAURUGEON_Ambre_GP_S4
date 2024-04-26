@@ -233,6 +233,14 @@ public class HeroEntity : MonoBehaviour
     private void Update()
     {
         _UpdateOrientVisual();
+
+        // if(IsSliding){
+        //     if(Input.GetKey(KeyCode.Escape)){
+        //         _verticalSpeed= WallDetector.orientDetection * 7;
+        //         _horizontalSpeed= 5;
+        //         Debug.Log("je devrais avoir fait le walljump");
+        //     }
+        // }
     }
 
     private void _UpdateOrientVisual()
@@ -303,8 +311,9 @@ public class HeroEntity : MonoBehaviour
 
     //Wall Jump
 
-    // if(isSliding){
-    //     wallJump
+    // if(isSliding && Input.GetKey(KeyCode.Escape)){
+    //     _verticalSpeed=;
+    //     _horizontalSpeed=;
     // }
 
     // //si il slide 
