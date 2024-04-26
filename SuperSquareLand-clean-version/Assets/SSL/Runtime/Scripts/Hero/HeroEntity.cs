@@ -51,9 +51,11 @@ public class HeroEntity : MonoBehaviour
     [SerializeField] private float _downSlidingVerticalSpeed = -10f;
 
     [Header("Jump")]
-    [SerializeField] private HeroJumpSettings _jumpSettings;
+    [SerializeField]private HeroJumpSettings[] _allJumpSettings;
     [SerializeField] private HeroFallSettings _jumpFallSettings;
     [SerializeField] private HeroJumpHorizontalMovementSettings _jumpHorizontalMovementSettings;
+    private HeroJumpSettings _jumpSettings;
+
     enum JumpState
     {
         NotJumping,
@@ -111,6 +113,8 @@ public class HeroEntity : MonoBehaviour
             _ChangeOrientFromHorizontalMovement();
         }
 
+        if(IsTouchingGround) index = 0;
+        
         if (IsJumping && !IsDashing){
             _UpdateJump();
         } else {
@@ -181,14 +185,20 @@ public class HeroEntity : MonoBehaviour
             _horizontalSpeed = _dashSettings.speed;
             
             tr.emitting = true;
-        }
-        else {
-            IsDashing = false;
-            tr.emitting = false;
-            _dashTimer = 0;
-            _horizontalSpeed = _mvtSettings.speedMax;
+
+        } else {
+            _stopDash();
+            _horizontalSpeed = _mvtSettings.speedMax;   // qd le dash est fini reprendre le speed max
         }
     }
+
+    private void _stopDash(){
+        IsDashing = false;
+        _dashTimer = 0;
+
+        tr.emitting = false;
+    }
+
 
 //
     private void _ChangeOrientFromHorizontalMovement(){
@@ -218,11 +228,20 @@ public class HeroEntity : MonoBehaviour
         _rigidbody.velocity = velocity;
     }
 
+//Horizontal Settings
+    private void _ResetHorizontalSpeed(){
+        _horizontalSpeed = 0f;
+    }
+
      private void _ApplyHorizontalSpeed()
     {
         Vector2 velocity = _rigidbody.velocity;
         velocity.x = _horizontalSpeed*_orientX;
         _rigidbody.velocity = velocity;
+
+        if(IsTouchingWall){
+            _ResetHorizontalSpeed() ;
+        }
     }
 
     //IsTouchingGround vrai ou faux ? Si vrai : Si faux
@@ -255,6 +274,19 @@ public class HeroEntity : MonoBehaviour
     }
 
     //Jump
+    public bool canJump() => IsTouchingGround || index < _allJumpSettings.Length;
+
+    public int index = 0;
+    public HeroJumpSettings _GetJumpSettings(){
+        if (index >= _allJumpSettings.Length){
+            _jumpState = JumpState.Falling;
+        }
+        else{
+            _jumpSettings = _allJumpSettings[index];
+        }
+
+        return _jumpSettings;
+    }
 
     private void _UpdateJump(){
         switch(_jumpState){
@@ -270,6 +302,7 @@ public class HeroEntity : MonoBehaviour
 
     private void _UpdateJumpStateImpulsion(){
         _jumpTimer += Time.fixedDeltaTime;
+        _jumpSettings = _GetJumpSettings();
         if(_jumpTimer <_jumpSettings.jumpMaxDuration){
             _verticalSpeed = _jumpSettings.jumpSpeed;
         } else{
@@ -347,6 +380,7 @@ public class HeroEntity : MonoBehaviour
         }else{
             GUILayout.Label("InAir");
         }
+        GUILayout.Label("Sauts restants = " + (_allJumpSettings.Length-index).ToString());
         if(IsDashing){
             GUILayout.Label($"Dash Speed = {dashSettings.speed}");
         } else{
