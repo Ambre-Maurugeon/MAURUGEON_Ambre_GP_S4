@@ -20,6 +20,10 @@ public class CameraManager : MonoBehaviour
     //Follow
     private Vector3 _profileLastFollowDestination;
 
+    //Damping
+    private Vector3 _dampedPosition;
+
+
     private void Awake(){
         Instance = this;
     }
@@ -30,6 +34,7 @@ public class CameraManager : MonoBehaviour
 
     private void Update(){
         Vector3 nextPosition = _FindCameraNextPosition();
+        nextPosition = _ApplyDamping(nextPosition);
 
         if(_IsPlayingProfileTransition()){
             _profileTransitionTimer += Time.deltaTime;
@@ -43,6 +48,39 @@ public class CameraManager : MonoBehaviour
             _SetCameraSize(_currentCameraProfile.CameraSize);
         }
     }
+
+//Damping 
+private Vector3 _ApplyDamping(Vector3 position){
+    if(_currentCameraProfile.UseDampingHorizontally)
+    {
+        _dampedPosition.x = Mathf.Lerp(
+            _dampedPosition.x,
+            position.x,
+            _currentCameraProfile.HorizontalDampingFactor * Time.deltaTime
+        );
+    } else {
+        _dampedPosition.x = position.x;
+    }
+
+    if(_currentCameraProfile.UseDampingVertically){
+        _dampedPosition.y = Mathf.Lerp(
+            _dampedPosition.y,
+            position.y,
+            _currentCameraProfile.VerticalDampingFactor  * Time.deltaTime
+        );
+    } else{
+        _dampedPosition.y = position.y;
+    }
+
+    return _dampedPosition;
+}
+
+
+private void _SetCameraDampedPosition(Vector3 position){
+    _dampedPosition.x=position.x;
+    _dampedPosition.y=position.y;
+}
+
 //
 private Vector3 _FindCameraNextPosition(){
     if(_currentCameraProfile.ProfileType == CameraProfileType.FollowTarget){
@@ -90,6 +128,7 @@ private Vector3 _FindCameraNextPosition(){
         if(transition != null){
             _PlayProfileTransition(transition);
         }
+        _SetCameraDampedPosition(_FindCameraNextPosition());
     }
 
     public void ExitProfile(CameraProfile cameraProfile, CameraProfileTransition transition = null){
@@ -99,9 +138,10 @@ private Vector3 _FindCameraNextPosition(){
         if(transition != null){
             _PlayProfileTransition(transition);
         }
+        _SetCameraDampedPosition(_FindCameraNextPosition());
     }
 
-    //Set Camera
+//Set Camera
     private void _SetCameraPosition(Vector3 position){
         Vector3 newCameraPosition = _camera.transform.position;
         newCameraPosition.x = position.x;
@@ -117,6 +157,7 @@ private Vector3 _FindCameraNextPosition(){
         _currentCameraProfile = _defaultCameraProfile;
         _SetCameraPosition(_currentCameraProfile.Position);
         _SetCameraSize(_currentCameraProfile.CameraSize);
+        _SetCameraDampedPosition(_FindCameraNextPosition());
     }
 
 }
