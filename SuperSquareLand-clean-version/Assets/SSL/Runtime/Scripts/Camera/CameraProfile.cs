@@ -2,7 +2,8 @@
 
 public enum CameraProfileType {
     Static = 0,
-    FollowTarget
+    FollowTarget,
+    AutoScroll
 }
 
 public class CameraProfile : MonoBehaviour
@@ -11,7 +12,7 @@ public class CameraProfile : MonoBehaviour
     [SerializeField] private CameraProfileType _profileType = CameraProfileType.Static;
 
     [Header("Follow")]
-    [SerializeField] private Transform _targetToFollow;
+    [SerializeField] private CameraFollowable _targetToFollow;
 
     private Camera _camera;
     public float CameraSize => _camera.orthographicSize;
@@ -19,7 +20,7 @@ public class CameraProfile : MonoBehaviour
 
 
     public CameraProfileType ProfileType => _profileType;
-    public Transform TargetToFollow => _targetToFollow;
+    public CameraFollowable TargetToFollow => _targetToFollow;
 
 
     private void Awake(){

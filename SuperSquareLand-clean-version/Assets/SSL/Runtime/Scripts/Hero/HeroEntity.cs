@@ -75,9 +75,14 @@ public class HeroEntity : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
 
+    //Camera Follow
+    private CameraFollowable _cameraFollowable;
 
     private void Awake(){
         tr = GetComponent<TrailRenderer>();
+        _cameraFollowable = GetComponent<CameraFollowable>();
+        _cameraFollowable.FollowPositionX = _rigidbody.position.x;
+        _cameraFollowable.FollowPositionY = _rigidbody.position.y;
     }
 
     public void SetMoveDirX(float dirX)
@@ -88,6 +93,7 @@ public class HeroEntity : MonoBehaviour
     private void FixedUpdate()
     {
         _ApplyGroundDetection();
+        _UpdateCameraFollowPosition();
         _ApplyWallDetection();
         
         horizontalMovementSettings = _GetCurrentHorizontalMovementSettings();
@@ -123,6 +129,12 @@ public class HeroEntity : MonoBehaviour
             }else{
                 _ApplySlidingGravity(_normalSlidingVerticalSpeed);
             }
+
+            // if(Input.GetKeyDown(KeyCode.Escape)){
+            //     _verticalSpeed= WallDetector.orientDetection * 7;
+            //     _horizontalSpeed= 5;
+            //     Debug.Log("je devrais avoir fait le walljump");
+            // }
         }
 
         _ApplyHorizontalSpeed();
@@ -233,14 +245,6 @@ public class HeroEntity : MonoBehaviour
     private void Update()
     {
         _UpdateOrientVisual();
-
-        // if(IsSliding){
-        //     if(Input.GetKey(KeyCode.Escape)){
-        //         _verticalSpeed= WallDetector.orientDetection * 7;
-        //         _horizontalSpeed= 5;
-        //         Debug.Log("je devrais avoir fait le walljump");
-        //     }
-        // }
     }
 
     private void _UpdateOrientVisual()
@@ -321,6 +325,13 @@ public class HeroEntity : MonoBehaviour
 
     // }
 
+    //Camera
+    private void _UpdateCameraFollowPosition(){
+        _cameraFollowable.FollowPositionX = _rigidbody.position.x;
+        if(IsTouchingGround && !IsJumping){
+            _cameraFollowable.FollowPositionY = _rigidbody.position.y;
+        }
+    }
 
     //Debug
     private void OnGUI()
