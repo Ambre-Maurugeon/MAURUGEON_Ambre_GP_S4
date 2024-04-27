@@ -112,13 +112,13 @@ public class HeroEntity : MonoBehaviour
 
             _ChangeOrientFromHorizontalMovement();
         }
-
-        if(IsTouchingGround) index = 0;
         
-        if (IsJumping && !IsDashing){
+        if (IsJumping && !IsDashing)
+        {
             _UpdateJump();
-        } else {
-            if(!IsTouchingGround)
+        }
+        else {
+            if(!IsTouchingGround && !IsSliding) // !walljumping à vérif
             { 
                 _ApplyFallGravity(_fallSettings); 
             }
@@ -127,19 +127,20 @@ public class HeroEntity : MonoBehaviour
             }
         }
 
+        
+        if(IsWallJumping){
+            _UpdateWallJump();
+        } 
+
         if(IsSliding){
             if(Input.GetKey(KeyCode.S)){
                 _ApplySlidingGravity(_downSlidingVerticalSpeed);
             }else{
                 _ApplySlidingGravity(_normalSlidingVerticalSpeed);
             }
-
-            // if(Input.GetKeyDown(KeyCode.Escape)){
-            //     _verticalSpeed= WallDetector.orientDetection * 7;
-            //     _horizontalSpeed= 5;
-            //     Debug.Log("je devrais avoir fait le walljump");
-            // }
         }
+        
+        if(IsTouchingGround || IsSliding ) index = 0;
 
         _ApplyHorizontalSpeed();
         _ApplyVerticalSpeed();
@@ -274,9 +275,10 @@ public class HeroEntity : MonoBehaviour
     }
 
     //Jump
-    public bool canJump() => IsTouchingGround || index < _allJumpSettings.Length;
-
+    public bool CanJump => IsTouchingGround || index < _allJumpSettings.Length;
+    //public int _currentJumpIndex => (IsTouchingGround || IsSliding) ? 0 : index;
     public int index = 0;
+
     public HeroJumpSettings _GetJumpSettings(){
         if (index >= _allJumpSettings.Length){
             _jumpState = JumpState.Falling;
@@ -347,16 +349,25 @@ public class HeroEntity : MonoBehaviour
     }
 
     //Wall Jump
+    private float _wallJumpTimer;
 
-    // if(isSliding && Input.GetKey(KeyCode.Escape)){
-    //     _verticalSpeed=;
-    //     _horizontalSpeed=;
-    // }
+    public void WallJumpStart(){
+        _orientX = -_orientX; 
+        _wallJumpTimer = 0f; 
+        _UpdateWallJump(); 
+    }
 
-    // //si il slide 
-    // if input.GetKey(KeyCode.Escape){
+    private void _UpdateWallJump(){
+        _wallJumpTimer += Time.fixedDeltaTime;
+        if(_wallJumpTimer < _wallJumpSettings.wallJumpDuration){
+            _horizontalSpeed = _wallJumpSettings.wallJumpHorizontalSpeed;
+            _verticalSpeed = _wallJumpSettings.wallJumpVerticalSpeed;
+        } else {
+            _ApplyFallGravity(_fallSettings); // à modif potentiellemnt
+        }
+    }
 
-    // }
+    public bool IsWallJumping ;
 
     //Camera
     private void _UpdateCameraFollowPosition(){

@@ -6,6 +6,7 @@ using System;
 [Serializable]
 public class HeroWallJumpSettings
 {
-    public float wallJumpVerticalSpeed = 7f;
+    public float wallJumpVerticalSpeed = 5f;
     public float wallJumpHorizontalSpeed = 7f;
+    public float wallJumpDuration = 0.1f;
 }

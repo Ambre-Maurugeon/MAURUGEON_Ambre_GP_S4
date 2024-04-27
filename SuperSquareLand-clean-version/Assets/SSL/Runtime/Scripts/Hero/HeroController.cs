@@ -34,16 +34,20 @@ public class HeroController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Space)){
-            if((_entity.canJump() || _IsCoyoteTimeActive())){
+            if((_entity.CanJump || _IsCoyoteTimeActive()) && !_entity.IsSliding){
                 _entity.JumpStart();
                 _GetNextJump();
-            } else {
+            } else if(_entity.IsSliding){
+                _entity.IsWallJumping = true;
+                _entity.WallJumpStart();
+            }
+            else {
                 _ResetJumpBuffer();
             }
         } 
 
         if(IsJumpBufferActive()){
-            if((_entity.canJump() || _IsCoyoteTimeActive())){
+            if((_entity.CanJump || _IsCoyoteTimeActive())&& !_entity.IsSliding){
                 _entity.JumpStart();
                 _GetNextJump();
             }
@@ -74,9 +78,10 @@ public class HeroController : MonoBehaviour
     }
 
 //Multi Jump
-private void _GetNextJump(){
-    _entity.index +=1;
-}
+    private void _GetNextJump(){
+        _entity.index +=1;
+    }
+
 
 //Jump Buffer
     private void _ResetJumpBuffer(){
