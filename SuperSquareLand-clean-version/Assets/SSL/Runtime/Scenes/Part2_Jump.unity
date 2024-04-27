@@ -1045,58 +1045,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _guiDebug
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _wallJumpSettings.wallJumpVerticalSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[0].jumpSpeed
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[1].jumpSpeed
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[2].jumpSpeed
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _wallJumpSettings.wallJumpHorizontalSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[0].jumpMaxDuration
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[0].jumpMinDuration
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[1].jumpMaxDuration
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[1].jumpMinDuration
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[2].jumpMaxDuration
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6480041685457909243, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
-      propertyPath: _allJumpSettings.Array.data[2].jumpMinDuration
-      value: 0.05
-      objectReference: {fileID: 0}
     - target: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       propertyPath: m_Name
       value: SquareHero_Entity

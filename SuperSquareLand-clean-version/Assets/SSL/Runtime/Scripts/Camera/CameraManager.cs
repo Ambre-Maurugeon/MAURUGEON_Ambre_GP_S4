@@ -23,16 +23,24 @@ public class CameraManager : MonoBehaviour
     //Damping
     private Vector3 _dampedPosition;
 
+    //Delimitation cam
+    private Rect boundsRect;
+    private Vector2 worldHalfScreenSize;
+    private Vector2 worldScreenSize;
 
     private void Awake(){
         Instance = this;
+
     }
 
     private void Start(){
         _InitToDefaultProfile();
+
+        if(_currentCameraProfile.ProfileType == CameraProfileType.AutoScroll) _SetAutoScroll();
     }
 
     private void Update(){
+
         Vector3 nextPosition = _FindCameraNextPosition();
         nextPosition = _ClampPositionIntoBounds(nextPosition);
         nextPosition = _ApplyDamping(nextPosition);
@@ -51,14 +59,19 @@ public class CameraManager : MonoBehaviour
     }
 
 //Delimitation Camera
-    private Vector3 _ClampPositionIntoBounds(Vector3 position){
-        if(!_currentCameraProfile.HasBounds) return position;
 
-        Rect boundsRect = _currentCameraProfile.BoundsRect;
+    private void _GetCameraInfo(){
+        boundsRect = _currentCameraProfile.BoundsRect;
         Vector3 worldBottomLeft = _camera.ScreenToWorldPoint(new Vector3(0f,0f));
         Vector3 worldTopRight = _camera.ScreenToWorldPoint(new Vector3(_camera.pixelWidth,_camera.pixelHeight));
         Vector2 worldScreenSize = new Vector2(worldTopRight.x - worldBottomLeft.x, worldTopRight.y - worldBottomLeft.y);
-        Vector2 worldHalfScreenSize = worldScreenSize / 2f;
+        worldHalfScreenSize = worldScreenSize / 2f;
+    }
+
+    private Vector3 _ClampPositionIntoBounds(Vector3 position){
+        if(!_currentCameraProfile.HasBounds) return position;
+
+        _GetCameraInfo();
 
         if(position.x >boundsRect.xMax - worldHalfScreenSize.x){
             position.x = boundsRect.xMax - worldHalfScreenSize.x;
@@ -78,6 +91,8 @@ public class CameraManager : MonoBehaviour
 
         return position;
     }
+
+
     
 
 //Damping 
@@ -114,6 +129,7 @@ public class CameraManager : MonoBehaviour
 
 //
 private Vector3 _FindCameraNextPosition(){
+    //Target To follow
     if(_currentCameraProfile.ProfileType == CameraProfileType.FollowTarget){
         if (_currentCameraProfile.TargetToFollow != null){
             CameraFollowable targetToFollow = _currentCameraProfile.TargetToFollow;
@@ -122,9 +138,44 @@ private Vector3 _FindCameraNextPosition(){
             return _profileLastFollowDestination;
         }
     }
+    
+    //AutoScroll
+    else if(_currentCameraProfile.ProfileType == CameraProfileType.AutoScroll){
+        _LaunchAutoScroll();
+    }
 
     return _currentCameraProfile.Position;
 }
+
+
+//AutoScroll
+private Vector3 origine;
+private bool go = false;
+private Vector3 destination = Vector3.zero;
+private float autoScrollSpeed; 
+
+
+private void _SetAutoScroll(){
+    _GetCameraInfo();
+    origine = new Vector3(boundsRect.xMin + worldHalfScreenSize.x, _currentCameraProfile.myPosition.y, _currentCameraProfile.myPosition.z);
+    _currentCameraProfile.myPosition=origine;
+}
+
+private void _LaunchAutoScroll()
+{
+    if (!go)
+    {
+        _GetCameraInfo();
+        destination = new Vector3(boundsRect.xMax - worldHalfScreenSize.x, _currentCameraProfile.Position.y, _currentCameraProfile.Position.z);
+        go = true;
+    }
+    else
+    {
+        autoScrollSpeed += Mathf.Clamp01(origine.x/destination.x)*0.0005f; // ajuster vitesse ?
+        _currentCameraProfile.UpdatePosition(Vector3.Lerp(_currentCameraProfile.myPosition, destination, autoScrollSpeed * Time.deltaTime));
+    }
+}
+
 
 //Transition
     //Play Transition
@@ -140,7 +191,7 @@ private Vector3 _FindCameraNextPosition(){
         return _profileTransitionTimer < _profileTransitionDuration;
     }
 
-    //Set Transition
+//Set Transition
     private float _CalculateProfileTransitionCameraSize(float endSize){
         float percent = _profileTransitionTimer / _profileTransitionDuration;
         float startSize = _profileTransitionStartSize;

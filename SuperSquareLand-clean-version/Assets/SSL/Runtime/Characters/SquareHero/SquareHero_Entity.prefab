@@ -1030,7 +1030,7 @@ MonoBehaviour:
     speed: 40
     duration: 0.1
   _dashSettingsInAir:
-    speed: 55
+    speed: 60
     duration: 0.1
   IsDashing: 0
   dashSettings:
@@ -1043,10 +1043,16 @@ MonoBehaviour:
     fallSpeedMax: 10
   _normalSlidingVerticalSpeed: -1.2
   _downSlidingVerticalSpeed: -10
-  _jumpSettings:
-    jumpSpeed: 8
+  _allJumpSettings:
+  - jumpSpeed: 8
     jumpMinDuration: 0.1
     jumpMaxDuration: 0.25
+  - jumpSpeed: 6
+    jumpMinDuration: 0.1
+    jumpMaxDuration: 0.25
+  - jumpSpeed: 6
+    jumpMinDuration: 0.05
+    jumpMaxDuration: 0.1
   _jumpFallSettings:
     fallGravity: 60
     fallSpeedMax: 20
@@ -1057,9 +1063,12 @@ MonoBehaviour:
     speedMax: 7
   _wallDetector: {fileID: 3472244520833908180}
   _wallJumpSettings:
-    wallJumpVerticalSpeed: 7
-    wallJumpHorizontalSpeed: 7
-  _guiDebug: 0
+    wallJumpVerticalSpeed: 15
+    wallJumpHorizontalSpeed: 5
+    wallJumpDuration: 0.1
+  _guiDebug: 1
+  index: 0
+  IsWallJumping: 0
 --- !u!114 &1251789900203675984
 MonoBehaviour:
   m_ObjectHideFlags: 0

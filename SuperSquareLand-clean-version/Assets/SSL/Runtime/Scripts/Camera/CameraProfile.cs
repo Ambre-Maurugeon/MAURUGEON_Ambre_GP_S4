@@ -42,6 +42,8 @@ public class CameraProfile : MonoBehaviour
     public bool HasBounds => _hasBounds;
     public Rect BoundsRect => _boundsRect;
 
+    //Autoscroll
+
 
     private void Awake(){
         _camera = GetComponent<Camera>();
@@ -54,6 +56,16 @@ public class CameraProfile : MonoBehaviour
         if(!_hasBounds) return;
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(_boundsRect.center, _boundsRect.size);
+    }
+
+    public void UpdatePosition(Vector3 newPosition){
+        transform.position = newPosition;
+    }
+
+        public Vector3 myPosition
+    {
+        get => _camera.transform.position;
+        set => _camera.transform.position = value;
     }
 }
 

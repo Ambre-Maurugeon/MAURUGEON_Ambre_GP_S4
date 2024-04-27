@@ -82,6 +82,7 @@ public class HeroEntity : MonoBehaviour
 
     private void Awake(){
         tr = GetComponent<TrailRenderer>();
+        
         _cameraFollowable = GetComponent<CameraFollowable>();
         _cameraFollowable.FollowPositionX = _rigidbody.position.x;
         _cameraFollowable.FollowPositionY = _rigidbody.position.y;
