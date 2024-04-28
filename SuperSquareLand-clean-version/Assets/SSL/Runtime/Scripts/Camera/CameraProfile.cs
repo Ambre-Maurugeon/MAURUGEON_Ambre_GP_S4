@@ -13,6 +13,8 @@ public class CameraProfile : MonoBehaviour
 
     [Header("Follow")]
     [SerializeField] private CameraFollowable _targetToFollow;
+    public float _followOffsetX=8f;
+    [SerializeField] private float _followOffsetDamping=1.5f;
 
     [Header("Damping")]
     [SerializeField] private bool _useDampingHorizontally;
@@ -23,6 +25,10 @@ public class CameraProfile : MonoBehaviour
     [Header("Bounds")]
     [SerializeField] private bool _hasBounds;
     [SerializeField] private Rect _boundsRect = new Rect(0f,0f,10f,10f);
+
+    [Header("AutoScroll")]
+    public float _autoScrollHorizontalSpeed; //{get; private set;}
+    public float _autoScrollVerticalSpeed; //{get; private set;}
 
     private Camera _camera;
     public float CameraSize => _camera.orthographicSize;
@@ -42,8 +48,6 @@ public class CameraProfile : MonoBehaviour
     public bool HasBounds => _hasBounds;
     public Rect BoundsRect => _boundsRect;
 
-    //Autoscroll
-
 
     private void Awake(){
         _camera = GetComponent<Camera>();
@@ -58,6 +62,7 @@ public class CameraProfile : MonoBehaviour
         Gizmos.DrawWireCube(_boundsRect.center, _boundsRect.size);
     }
 
+    //Autoscroll
     public void UpdatePosition(Vector3 newPosition){
         transform.position = newPosition;
     }

@@ -66,6 +66,9 @@ public class HeroEntity : MonoBehaviour
     private JumpState _jumpState = JumpState.NotJumping;
     private float _jumpTimer;
 
+    [HideInInspector]
+    public int index = 0;
+
 
     [Header("Wall")]
     [SerializeField] private WallDetector _wallDetector;
@@ -73,18 +76,22 @@ public class HeroEntity : MonoBehaviour
     
     [Header("Wall Jump")]
     [SerializeField] private HeroWallJumpSettings _wallJumpSettings;
+    [HideInInspector]
+    public bool IsWallJumping ;
 
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
 
     //Camera Follow
     private CameraFollowable _cameraFollowable;
+    //private CameraProfile _cameraProfile;
 
     private void Awake(){
         tr = GetComponent<TrailRenderer>();
         
         _cameraFollowable = GetComponent<CameraFollowable>();
-        _cameraFollowable.FollowPositionX = _rigidbody.position.x;
+        //_cameraProfile = FindObjectOfType<CameraProfile>();
+        _cameraFollowable.FollowPositionX = _rigidbody.position.x;//+_cameraProfile._followOffsetX;
         _cameraFollowable.FollowPositionY = _rigidbody.position.y;
     }
 
@@ -278,7 +285,6 @@ public class HeroEntity : MonoBehaviour
     //Jump
     public bool CanJump => IsTouchingGround || index < _allJumpSettings.Length;
     //public int _currentJumpIndex => (IsTouchingGround || IsSliding) ? 0 : index;
-    public int index = 0;
 
     public HeroJumpSettings _GetJumpSettings(){
         if (index >= _allJumpSettings.Length){
@@ -367,8 +373,6 @@ public class HeroEntity : MonoBehaviour
             _ApplyFallGravity(_fallSettings); // à modif potentiellemnt
         }
     }
-
-    public bool IsWallJumping ;
 
     //Camera
     private void _UpdateCameraFollowPosition(){

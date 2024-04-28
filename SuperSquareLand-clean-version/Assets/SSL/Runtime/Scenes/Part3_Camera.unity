@@ -931,6 +931,8 @@ MonoBehaviour:
     y: 0
     width: 10
     height: 10
+  _autoScrollHorizontalSpeed: 1
+  _autoScrollVerticalSpeed: 0
 --- !u!20 &869992946
 Camera:
   m_ObjectHideFlags: 0
@@ -1635,6 +1637,8 @@ MonoBehaviour:
     y: 95
     width: 48
     height: 15
+  _autoScrollHorizontalSpeed: 0.05
+  _autoScrollVerticalSpeed: 0
 --- !u!1 &1641381205
 GameObject:
   m_ObjectHideFlags: 0

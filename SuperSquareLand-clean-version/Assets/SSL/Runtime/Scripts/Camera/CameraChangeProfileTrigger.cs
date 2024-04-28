@@ -28,13 +28,14 @@ public class CameraChangeProfileTrigger : MonoBehaviour
         Gizmos.color = Color.white;
     }
 
+//modif le trigger pr l'autoscroll
     private void OnTriggerEnter2D(Collider2D other){
-        if(!other.CompareTag(TARGET_TAG) || (_cameraProfile.ProfileType != CameraProfileType.AutoScroll)) return;
+        if(!other.CompareTag(TARGET_TAG) || (_cameraProfile.ProfileType == CameraProfileType.AutoScroll)) return;
         CameraManager.Instance.EnterProfile(_cameraProfile, _enterTransition);//else
     }
 
     private void OnTriggerExit2D(Collider2D other){
-        if(!other.CompareTag(TARGET_TAG) || (_cameraProfile.ProfileType != CameraProfileType.AutoScroll)) return;
+        if(!other.CompareTag(TARGET_TAG) || (_cameraProfile.ProfileType == CameraProfileType.AutoScroll)) return;
         CameraManager.Instance.ExitProfile(_cameraProfile, _exitTransition);//else
     }
 }
