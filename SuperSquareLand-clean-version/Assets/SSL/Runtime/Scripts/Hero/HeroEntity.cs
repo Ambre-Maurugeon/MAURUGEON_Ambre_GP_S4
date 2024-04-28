@@ -22,6 +22,7 @@ public class HeroEntity : MonoBehaviour
     [FormerlySerializedAs("_dashSettings")]
     [SerializeField] private HeroDashSettings _dashSettingsOnGround;
     [SerializeField] private HeroDashSettings _dashSettingsInAir;
+    [SerializeField] private float _dashCooldown;
 
     [HideInInspector]
     public bool IsDashing = false;
@@ -30,6 +31,7 @@ public class HeroEntity : MonoBehaviour
     public HeroDashSettings dashSettings;
 
     private float _dashTimer;
+    private float _dashCooldownTimer=0f;
     private TrailRenderer tr;
 
     [Header("Orientation")]
@@ -118,7 +120,7 @@ public class HeroEntity : MonoBehaviour
             }
         } else{
             if(IsDashing){
-                Dash(dashSettings, horizontalMovementSettings); //à vérif
+                Dash(dashSettings, horizontalMovementSettings); 
             } else if (IsJumping){
                 _UpdateHorizontalSpeed(_jumpHorizontalMovementSettings);
             }   
@@ -134,7 +136,7 @@ public class HeroEntity : MonoBehaviour
             _UpdateJump();
         }
         else {
-            if(!IsTouchingGround && !IsSliding) // !walljumping à vérif
+            if(!IsTouchingGround && !IsSliding) 
             { 
                 _ApplyFallGravity(_fallSettings); 
             }
@@ -157,6 +159,7 @@ public class HeroEntity : MonoBehaviour
         
         if(IsTouchingGround || IsSliding ) index = 0;
 
+        _UpdateDashCooldown();
         _ApplyHorizontalSpeed();
         _ApplyVerticalSpeed();
         
@@ -188,9 +191,6 @@ public class HeroEntity : MonoBehaviour
     }
 
 //Dash
-    private HeroDashSettings _GetCurrentDashSettings(){
-        return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
-    }
 
     public void Dash(HeroDashSettings _dashSettings, HeroHorizontalMovementsSettings _mvtSettings){
         
@@ -213,8 +213,23 @@ public class HeroEntity : MonoBehaviour
         _dashTimer = 0;
 
         tr.emitting = false;
+        
+        _dashCooldownTimer = _dashCooldown;
     }
 
+    //DashCooldown
+
+    private HeroDashSettings _GetCurrentDashSettings(){
+        return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
+    }
+
+    private void _UpdateDashCooldown(){
+        if (_dashCooldownTimer > 0f) {
+            _dashCooldownTimer -= Time.fixedDeltaTime; 
+        }
+    }
+
+    public bool CanDash => _dashCooldownTimer <= 0f;
 
 //
     private void _ChangeOrientFromHorizontalMovement(){
@@ -377,7 +392,7 @@ public class HeroEntity : MonoBehaviour
             _horizontalSpeed = _wallJumpSettings.wallJumpHorizontalSpeed;
             _verticalSpeed = _wallJumpSettings.wallJumpVerticalSpeed;
         } else {
-            _ApplyFallGravity(_fallSettings); // à modif potentiellemnt
+            _ApplyFallGravity(_fallSettings); 
         }
     }
 
