@@ -1936,6 +1936,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
       insertIndex: -1
       addedObject: {fileID: 732721623840024192}
+    - targetCorrespondingSourceObject: {fileID: 6771865885331362632, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 732721623840024193}
   m_SourcePrefab: {fileID: 100100000, guid: 58ffc10b51f5a6a4996c22f63f520b49, type: 3}
 --- !u!4 &732721623840024182 stripped
 Transform:
@@ -1969,6 +1972,22 @@ MonoBehaviour:
   _objectToBounce: {fileID: 1410546883}
   bouncePeriod: 0.1
   bounceHeight: 0.2
+--- !u!114 &732721623840024193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928786257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac8a69e993951e458c4ffe60fb89c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entity: {fileID: 2055032675}
+  _objectToRotate: {fileID: 1410546883}
+  rotationPeriod: 0.2
+  rotationFactor: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

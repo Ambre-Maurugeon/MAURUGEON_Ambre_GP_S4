@@ -36,7 +36,7 @@ public class HeroEffectBounce : MonoBehaviour
         Vector3 newPosition = _objectToBounce.localPosition;
         newPosition.y -= _currentHeight;
         _currentHeight = height;
-        newPosition.y  = _currentHeight;
+        newPosition.y  += _currentHeight;
         _objectToBounce.localPosition = newPosition;
     }
 }
