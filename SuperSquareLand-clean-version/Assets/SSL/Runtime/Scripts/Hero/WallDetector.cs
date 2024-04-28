@@ -30,14 +30,6 @@ public class WallDetector : MonoBehaviour
             );
 
             if(hitRight.collider != null || hitLeft.collider != null){
-                if(hitRight.collider != null){
-                    orientDetection = 1;
-                    //Debug.Log("contact en 1, sur la droite");
-                }
-                else{
-                    orientDetection = -1;
-                    //Debug.Log("contact en -1, sur la gauche");
-                }
                 return true;
             }
         }

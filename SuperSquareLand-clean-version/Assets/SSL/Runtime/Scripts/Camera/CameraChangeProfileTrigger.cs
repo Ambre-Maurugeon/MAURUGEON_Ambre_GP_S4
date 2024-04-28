@@ -28,7 +28,6 @@ public class CameraChangeProfileTrigger : MonoBehaviour
         Gizmos.color = Color.white;
     }
 
-//modif le trigger pr l'autoscroll
     private void OnTriggerEnter2D(Collider2D other){
         if(!other.CompareTag(TARGET_TAG) || (CameraManager.Instance.CurrentCameraProfile.ProfileType == CameraProfileType.AutoScroll)) return;
         CameraManager.Instance.EnterProfile(_cameraProfile, _enterTransition);//else

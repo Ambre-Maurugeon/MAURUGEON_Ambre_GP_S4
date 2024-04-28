@@ -64,13 +64,12 @@ public class CameraProfile : MonoBehaviour
 
     //Autoscroll
     public void UpdatePosition(Vector3 newPosition){
-        transform.position = newPosition;
+        _camera.transform.position = newPosition;
     }
 
         public Vector3 myPosition
     {
         get => _camera.transform.position;
-        set => _camera.transform.position = value;
     }
 }
 

@@ -165,10 +165,11 @@ public class HeroEntity : MonoBehaviour
         
     }
 
-//Mvt
-public bool IsHorizontalMoving => _moveDirX !=0f;
+//Horizontal Mvt
+    public bool IsHorizontalMoving => _moveDirX !=0f;
+
     private void _UpdateHorizontalSpeed(HeroHorizontalMovementsSettings settings){
-        if(_moveDirX != 0f)
+        if(IsHorizontalMoving)
         {
             _Accelerate(settings); 
         }
@@ -192,52 +193,11 @@ public bool IsHorizontalMoving => _moveDirX !=0f;
         }
     }
 
-//Dash
-
-    public void Dash(HeroDashSettings _dashSettings, HeroHorizontalMovementsSettings _mvtSettings){
-        
-        _dashTimer += Time.fixedDeltaTime;
-        if(_dashTimer < _dashSettings.duration){
-            IsDashing = true; 
-            _ResetVerticalSpeed();
-            _horizontalSpeed = _dashSettings.speed;
-            
-            tr.emitting = true;
-
-        } else {
-            _stopDash();
-            _horizontalSpeed = _mvtSettings.speedMax;   // qd le dash est fini reprendre le speed max
-        }
-    }
-
-    private void _stopDash(){
-        IsDashing = false;
-        _dashTimer = 0;
-
-        tr.emitting = false;
-        
-        _dashCooldownTimer = _dashCooldown;
-    }
-
-    //DashCooldown
-
-    private HeroDashSettings _GetCurrentDashSettings(){
-        return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
-    }
-
-    private void _UpdateDashCooldown(){
-        if (_dashCooldownTimer > 0f) {
-            _dashCooldownTimer -= Time.fixedDeltaTime; 
-        }
-    }
-
-    public bool CanDash => _dashCooldownTimer <= 0f;
-
-//
     private void _ChangeOrientFromHorizontalMovement(){
         if(_moveDirX == 0f) return ; // et si pas d'accolades le if execute juste la ligne d'apres 
         _orientX = Mathf.Sign(_moveDirX);
     }
+
 
 //Vertical Settings
     private void _ApplyFallGravity(HeroFallSettings settings){
@@ -282,6 +242,7 @@ public bool IsHorizontalMoving => _moveDirX !=0f;
         return IsTouchingGround ? _groundHorizontalMovementsSettings : _airHorizontalMovementsSettings;
     }
 
+//Orient
     private void _TurnBack(HeroHorizontalMovementsSettings settings){
         _horizontalSpeed -= settings.turnBackFrictions *Time.fixedDeltaTime;
         if(_horizontalSpeed <0f){
@@ -366,6 +327,47 @@ public bool IsHorizontalMoving => _moveDirX !=0f;
     public bool IsJumpImpulsing => _jumpState == JumpState.JumpImpulsion;
     public bool IsJumpMinDurationReached => _jumpTimer >= _jumpSettings.jumpMinDuration;
     public bool IsJumping => _jumpState != JumpState.NotJumping;
+
+
+//Dash
+    public void Dash(HeroDashSettings _dashSettings, HeroHorizontalMovementsSettings _mvtSettings){
+        
+        _dashTimer += Time.fixedDeltaTime;
+        if(_dashTimer < _dashSettings.duration){
+            IsDashing = true; 
+            _ResetVerticalSpeed();
+            _horizontalSpeed = _dashSettings.speed;
+            
+            tr.emitting = true;
+
+        } else {
+            _stopDash();
+            _horizontalSpeed = _mvtSettings.speedMax;   // qd le dash est fini reprendre le speed max
+        }
+    }
+
+    private void _stopDash(){
+        IsDashing = false;
+        _dashTimer = 0;
+
+        tr.emitting = false;
+        
+        _dashCooldownTimer = _dashCooldown;
+    }
+
+    //DashCooldown
+
+    private HeroDashSettings _GetCurrentDashSettings(){
+        return IsTouchingGround ?  _dashSettingsOnGround :  _dashSettingsInAir;
+    }
+
+    private void _UpdateDashCooldown(){
+        if (_dashCooldownTimer > 0f) {
+            _dashCooldownTimer -= Time.fixedDeltaTime; 
+        }
+    }
+
+    public bool CanDash => _dashCooldownTimer <= 0f;
 
 //Slide
     private void _ApplyWallDetection(){

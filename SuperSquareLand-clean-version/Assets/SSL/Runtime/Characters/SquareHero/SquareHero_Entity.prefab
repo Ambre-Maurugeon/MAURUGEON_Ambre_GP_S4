@@ -944,6 +944,8 @@ GameObject:
   - component: {fileID: 3472244520833908180}
   - component: {fileID: 9022300648954849933}
   - component: {fileID: 6786843476718479851}
+  - component: {fileID: 853229721628716906}
+  - component: {fileID: 551286611961433242}
   m_Layer: 0
   m_Name: SquareHero_Entity
   m_TagString: Untagged
@@ -1032,11 +1034,13 @@ MonoBehaviour:
   _dashSettingsInAir:
     speed: 60
     duration: 0.1
+  _dashCooldown: 0.5
   IsDashing: 0
   dashSettings:
     speed: 40
     duration: 0.1
   _orientVisualRoot: {fileID: 3024582456938629764}
+  _orientX: 1
   _groundDetector: {fileID: 1251789900203675984}
   _fallSettings:
     fallGravity: 20
@@ -1061,14 +1065,15 @@ MonoBehaviour:
     deceleration: 1
     turnBackFrictions: 200
     speedMax: 7
+  index: 0
   _wallDetector: {fileID: 3472244520833908180}
   _wallJumpSettings:
     wallJumpVerticalSpeed: 15
     wallJumpHorizontalSpeed: 5
     wallJumpDuration: 0.1
-  _guiDebug: 1
-  index: 0
   IsWallJumping: 0
+  _guiDebug: 1
+  _cameraFollowable: {fileID: 0}
 --- !u!114 &1251789900203675984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237,6 +1242,38 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &853229721628716906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6771865885331362632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eea39bb0e0552e439b7d5bc6705700f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entity: {fileID: 6480041685457909243}
+  _objectToBounce: {fileID: 3024582456938629764}
+  bouncePeriod: 0.1
+  bounceHeight: 0.2
+--- !u!114 &551286611961433242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6771865885331362632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac8a69e993951e458c4ffe60fb89c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entity: {fileID: 6480041685457909243}
+  _objectToRotate: {fileID: 3024582456938629764}
+  rotationPeriod: 0.2
+  rotationFactor: 5
 --- !u!1 &7668592666202038095
 GameObject:
   m_ObjectHideFlags: 0

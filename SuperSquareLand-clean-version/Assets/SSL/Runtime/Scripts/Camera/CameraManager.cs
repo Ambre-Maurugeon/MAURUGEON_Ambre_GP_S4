@@ -56,9 +56,6 @@ public class CameraManager : MonoBehaviour
         nextPosition = _ClampPositionIntoBounds(nextPosition);
         nextPosition = _ApplyDamping(nextPosition);
 
-        // Vector3 delayedPosition = Vector3.Lerp(_previousPosition, nextPosition, _currentCameraProfile._followOffsetDamping);
-        // delayedPosition = _ApplyDamping(delayedPosition);
-
         if(_IsPlayingProfileTransition() && _currentCameraProfile.ProfileType != CameraProfileType.AutoScroll){
             _profileTransitionTimer += Time.deltaTime;
             Vector3 transitionPosition = _CalculateProfileTransitionPosition(nextPosition);
@@ -70,8 +67,6 @@ public class CameraManager : MonoBehaviour
             _SetCameraPosition(nextPosition);
             _SetCameraSize(_currentCameraProfile.CameraSize);
         }
-
-        //_previousPosition = nextPosition;
     }
 
 
@@ -150,8 +145,8 @@ private Vector3 _FindCameraNextPosition(){
         if (_currentCameraProfile.TargetToFollow != null){
             CameraFollowable targetToFollow = _currentCameraProfile.TargetToFollow;
             if(_entity._orientX != _previousOrientX){
-                _profileLastFollowDestination.x = Mathf.Lerp(_profileLastFollowDestination.x, targetToFollow.FollowPositionX, _currentCameraProfile._followOffsetDamping*Time.deltaTime);
-                Debug.Log("je leeeerp de " + _profileLastFollowDestination.x + " à " + targetToFollow.FollowPositionX);
+                //_profileLastFollowDestination.x = Mathf.Lerp(_profileLastFollowDestination.x, targetToFollow.FollowPositionX, _currentCameraProfile._followOffsetDamping*Time.deltaTime);
+                Debug.Log("orient change");
             }
             else{
                 _profileLastFollowDestination.x = targetToFollow.FollowPositionX;
@@ -159,7 +154,6 @@ private Vector3 _FindCameraNextPosition(){
             }
             _profileLastFollowDestination.y = targetToFollow.FollowPositionY;
             _previousOrientX = _entity._orientX;
-            //_profileLastFollowDestination = new Vector3(_profileLastFollowDestination.x,_profileLastFollowDestination.y,_profileLastFollowDestination.z);
             return _profileLastFollowDestination;
         }
     }
@@ -174,19 +168,17 @@ private Vector3 _FindCameraNextPosition(){
 private void _SetAutoScroll(){
     _GetCameraInfo();
     origine = new Vector3(boundsRect.xMin + worldHalfScreenSize.x, boundsRect.yMin + worldHalfScreenSize.y, _currentCameraProfile.myPosition.z);
-    _currentCameraProfile.myPosition=origine;
+    _currentCameraProfile.UpdatePosition(origine);
     destination = new Vector3(boundsRect.xMax - worldHalfScreenSize.x, boundsRect.yMax - worldHalfScreenSize.y, _currentCameraProfile.Position.z);
 }
 
 private void _LaunchAutoScroll()
 {
-    // autoScrollSpeed += Mathf.Clamp01(origine.x/destination.x)*0.0005f*_currentCameraProfile._autoScrollHorizontalSpeed; 
-
     //de là à là en x à cette vitesse horizontale x
-    float scrollX = Mathf.Lerp(_currentCameraProfile.myPosition.x, destination.x, _currentCameraProfile._autoScrollHorizontalSpeed/100 * Time.deltaTime);
+    float scrollX = Mathf.MoveTowards(_currentCameraProfile.myPosition.x, destination.x, _currentCameraProfile._autoScrollHorizontalSpeed*Time.deltaTime);
 
     //de là à là en y à cette vitesse horizontale y
-    float scrollY = Mathf.Lerp(_currentCameraProfile.myPosition.y, destination.y, _currentCameraProfile._autoScrollVerticalSpeed/100 * Time.deltaTime);
+    float scrollY = Mathf.MoveTowards(_currentCameraProfile.myPosition.y, destination.y, _currentCameraProfile._autoScrollVerticalSpeed* Time.deltaTime);
 
     Vector3 newPosition = new Vector3 (scrollX, scrollY, _currentCameraProfile.myPosition.z);
     _currentCameraProfile.UpdatePosition(newPosition);
