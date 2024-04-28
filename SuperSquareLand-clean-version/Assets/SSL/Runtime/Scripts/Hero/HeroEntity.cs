@@ -53,7 +53,7 @@ public class HeroEntity : MonoBehaviour
     [Header("Jump")]
     [SerializeField]private HeroJumpSettings[] _allJumpSettings;
     [SerializeField] private HeroFallSettings _jumpFallSettings;
-    [SerializeField] private HeroJumpHorizontalMovementSettings _jumpHorizontalMovementSettings;
+    [SerializeField] private HeroHorizontalMovementsSettings _jumpHorizontalMovementSettings;
     private HeroJumpSettings _jumpSettings;
 
     enum JumpState
@@ -83,7 +83,7 @@ public class HeroEntity : MonoBehaviour
     [SerializeField] private bool _guiDebug = false;
 
 //Camera Follow
-    private CameraFollowable _cameraFollowable;
+    public CameraFollowable _cameraFollowable;
     private CameraProfile _cameraProfile;
 
     private void Awake(){
@@ -110,11 +110,19 @@ public class HeroEntity : MonoBehaviour
         dashSettings = _GetCurrentDashSettings();
 
         if(_AreOrientAndMovementOpposite()){
-            _TurnBack(horizontalMovementSettings);
+            if(IsJumping){ 
+                _TurnBack(_jumpHorizontalMovementSettings);
+            }
+            else{
+                _TurnBack(horizontalMovementSettings);
+            }
         } else{
             if(IsDashing){
                 Dash(dashSettings, horizontalMovementSettings); //à vérif
-            } else{
+            } else if (IsJumping){
+                _UpdateHorizontalSpeed(_jumpHorizontalMovementSettings);
+            }   
+            else{
                 _UpdateHorizontalSpeed(horizontalMovementSettings);
             }
 
@@ -135,11 +143,6 @@ public class HeroEntity : MonoBehaviour
             }
         }
 
-        
-        if(IsWallJumping){
-            _UpdateWallJump();
-        } 
-
         if(IsSliding){
             if(Input.GetKey(KeyCode.S)){
                 _ApplySlidingGravity(_downSlidingVerticalSpeed);
@@ -147,6 +150,10 @@ public class HeroEntity : MonoBehaviour
                 _ApplySlidingGravity(_normalSlidingVerticalSpeed);
             }
         }
+          
+        if(IsWallJumping){
+            _UpdateWallJump();
+        } 
         
         if(IsTouchingGround || IsSliding ) index = 0;
 
@@ -282,7 +289,7 @@ public class HeroEntity : MonoBehaviour
         _orientVisualRoot.localScale = newScale;
     }
 
-    //Jump
+//Jump
     public bool CanJump => IsTouchingGround || index < _allJumpSettings.Length;
     //public int _currentJumpIndex => (IsTouchingGround || IsSliding) ? 0 : index;
 
@@ -343,7 +350,7 @@ public class HeroEntity : MonoBehaviour
     public bool IsJumpMinDurationReached => _jumpTimer >= _jumpSettings.jumpMinDuration;
     public bool IsJumping => _jumpState != JumpState.NotJumping;
 
-    //Slide
+//Slide
     private void _ApplyWallDetection(){
         IsTouchingWall = _wallDetector.DetectWallNearBy();
     }
@@ -355,7 +362,7 @@ public class HeroEntity : MonoBehaviour
         _verticalSpeed = slidingVerticalSpeed;
     }
 
-    //Wall Jump
+//Wall Jump
     private float _wallJumpTimer;
 
     public void WallJumpStart(){
@@ -374,15 +381,16 @@ public class HeroEntity : MonoBehaviour
         }
     }
 
-    //Camera
+//Camera
     private void _UpdateCameraFollowPosition(){
         _cameraFollowable.FollowPositionX = _rigidbody.position.x + _orientX * _cameraProfile._followOffsetX;
+
         if(IsTouchingGround && !IsJumping){
             _cameraFollowable.FollowPositionY = _rigidbody.position.y;
         }
     }
 
-    //Debug
+//Debug
     private void OnGUI()
     {
         if (!_guiDebug) return;

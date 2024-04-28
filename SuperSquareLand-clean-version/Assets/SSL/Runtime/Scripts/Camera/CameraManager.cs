@@ -10,6 +10,7 @@ public class CameraManager : MonoBehaviour
     [Header("Profile System")]
     [SerializeField] private CameraProfile _defaultCameraProfile;
     private CameraProfile _currentCameraProfile;
+    public CameraProfile CurrentCameraProfile => _currentCameraProfile;
 
     //Transition
     private float _profileTransitionTimer = 0f;
@@ -57,9 +58,8 @@ public class CameraManager : MonoBehaviour
 
         // Vector3 delayedPosition = Vector3.Lerp(_previousPosition, nextPosition, _currentCameraProfile._followOffsetDamping);
         // delayedPosition = _ApplyDamping(delayedPosition);
-        //if()
 
-        if(_IsPlayingProfileTransition()){
+        if(_IsPlayingProfileTransition() && _currentCameraProfile.ProfileType != CameraProfileType.AutoScroll){
             _profileTransitionTimer += Time.deltaTime;
             Vector3 transitionPosition = _CalculateProfileTransitionPosition(nextPosition);
             _SetCameraPosition(transitionPosition);
@@ -150,8 +150,8 @@ private Vector3 _FindCameraNextPosition(){
         if (_currentCameraProfile.TargetToFollow != null){
             CameraFollowable targetToFollow = _currentCameraProfile.TargetToFollow;
             if(_entity._orientX != _previousOrientX){
-                _profileLastFollowDestination.x = Mathf.Lerp(_profileLastFollowDestination.x-7000, targetToFollow.FollowPositionX, _currentCameraProfile._followOffsetDamping*Time.deltaTime);
-                Debug.Log("je leeeerp");
+                _profileLastFollowDestination.x = Mathf.Lerp(_profileLastFollowDestination.x, targetToFollow.FollowPositionX, _currentCameraProfile._followOffsetDamping*Time.deltaTime);
+                Debug.Log("je leeeerp de " + _profileLastFollowDestination.x + " à " + targetToFollow.FollowPositionX);
             }
             else{
                 _profileLastFollowDestination.x = targetToFollow.FollowPositionX;
@@ -159,6 +159,7 @@ private Vector3 _FindCameraNextPosition(){
             }
             _profileLastFollowDestination.y = targetToFollow.FollowPositionY;
             _previousOrientX = _entity._orientX;
+            //_profileLastFollowDestination = new Vector3(_profileLastFollowDestination.x,_profileLastFollowDestination.y,_profileLastFollowDestination.z);
             return _profileLastFollowDestination;
         }
     }

@@ -1641,7 +1641,7 @@ MonoBehaviour:
     y: 95
     width: 48
     height: 15
-  _autoScrollHorizontalSpeed: 0.05
+  _autoScrollHorizontalSpeed: 25
   _autoScrollVerticalSpeed: 0
 --- !u!1 &1641381205
 GameObject:
