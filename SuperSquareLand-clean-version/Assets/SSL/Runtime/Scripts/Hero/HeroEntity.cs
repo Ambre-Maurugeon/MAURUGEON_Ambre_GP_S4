@@ -165,6 +165,8 @@ public class HeroEntity : MonoBehaviour
         
     }
 
+//Mvt
+public bool IsHorizontalMoving => _moveDirX !=0f;
     private void _UpdateHorizontalSpeed(HeroHorizontalMovementsSettings settings){
         if(_moveDirX != 0f)
         {
