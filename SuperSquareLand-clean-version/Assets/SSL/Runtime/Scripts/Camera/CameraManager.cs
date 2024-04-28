@@ -33,9 +33,13 @@ public class CameraManager : MonoBehaviour
     private Vector3 destination = Vector3.zero;
     private float autoScrollSpeed; 
 
+    //Follow Offset
+    private float _previousOrientX = 1;
+    private HeroEntity _entity;
+
     private void Awake(){
         Instance = this;
-
+        _entity = FindObjectOfType<HeroEntity>();
     }
 
     private void Start(){
@@ -44,11 +48,16 @@ public class CameraManager : MonoBehaviour
         if(_currentCameraProfile.ProfileType == CameraProfileType.AutoScroll) _SetAutoScroll();
     }
 
+//private Vector3 _previousPosition;
     private void Update(){
 
         Vector3 nextPosition = _FindCameraNextPosition();
         nextPosition = _ClampPositionIntoBounds(nextPosition);
         nextPosition = _ApplyDamping(nextPosition);
+
+        // Vector3 delayedPosition = Vector3.Lerp(_previousPosition, nextPosition, _currentCameraProfile._followOffsetDamping);
+        // delayedPosition = _ApplyDamping(delayedPosition);
+        //if()
 
         if(_IsPlayingProfileTransition()){
             _profileTransitionTimer += Time.deltaTime;
@@ -61,6 +70,8 @@ public class CameraManager : MonoBehaviour
             _SetCameraPosition(nextPosition);
             _SetCameraSize(_currentCameraProfile.CameraSize);
         }
+
+        //_previousPosition = nextPosition;
     }
 
 
@@ -138,17 +149,23 @@ private Vector3 _FindCameraNextPosition(){
     if(_currentCameraProfile.ProfileType == CameraProfileType.FollowTarget){
         if (_currentCameraProfile.TargetToFollow != null){
             CameraFollowable targetToFollow = _currentCameraProfile.TargetToFollow;
-            _profileLastFollowDestination.x = targetToFollow.FollowPositionX;
+            if(_entity._orientX != _previousOrientX){
+                _profileLastFollowDestination.x = Mathf.Lerp(_profileLastFollowDestination.x-7000, targetToFollow.FollowPositionX, _currentCameraProfile._followOffsetDamping*Time.deltaTime);
+                Debug.Log("je leeeerp");
+            }
+            else{
+                _profileLastFollowDestination.x = targetToFollow.FollowPositionX;
+                //return _profileLastFollowDestination;
+            }
             _profileLastFollowDestination.y = targetToFollow.FollowPositionY;
+            _previousOrientX = _entity._orientX;
             return _profileLastFollowDestination;
         }
     }
-    
     //AutoScroll
     else if(_currentCameraProfile.ProfileType == CameraProfileType.AutoScroll){
         _LaunchAutoScroll();
     }
-
     return _currentCameraProfile.Position;
 }
 

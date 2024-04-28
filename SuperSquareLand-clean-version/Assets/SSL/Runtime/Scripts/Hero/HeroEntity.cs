@@ -34,14 +34,14 @@ public class HeroEntity : MonoBehaviour
 
     [Header("Orientation")]
     [SerializeField] private Transform _orientVisualRoot;
-    private float _orientX = 1f;
+    public float _orientX = 1f;
 
     [Header("Vertical Movements")]
     private float _verticalSpeed = 0f;
     
     [Header("Ground")]
     [SerializeField] private GroundDetector _groundDetector;
-    public bool IsTouchingGround {get; private set;} // = public get(lire) pr heroController, private écriture (HeroEntity)
+    public bool IsTouchingGround {get; private set;}
 
     [Header("Fall")]
     [SerializeField] private HeroFallSettings _fallSettings;
@@ -82,16 +82,16 @@ public class HeroEntity : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _guiDebug = false;
 
-    //Camera Follow
+//Camera Follow
     private CameraFollowable _cameraFollowable;
-    //private CameraProfile _cameraProfile;
+    private CameraProfile _cameraProfile;
 
     private void Awake(){
         tr = GetComponent<TrailRenderer>();
         
         _cameraFollowable = GetComponent<CameraFollowable>();
-        //_cameraProfile = FindObjectOfType<CameraProfile>();
-        _cameraFollowable.FollowPositionX = _rigidbody.position.x;//+_cameraProfile._followOffsetX;
+        _cameraProfile = FindObjectOfType<CameraProfile>();
+        _cameraFollowable.FollowPositionX = _rigidbody.position.x + _orientX * _cameraProfile._followOffsetX;
         _cameraFollowable.FollowPositionY = _rigidbody.position.y;
     }
 
@@ -376,7 +376,7 @@ public class HeroEntity : MonoBehaviour
 
     //Camera
     private void _UpdateCameraFollowPosition(){
-        _cameraFollowable.FollowPositionX = _rigidbody.position.x;
+        _cameraFollowable.FollowPositionX = _rigidbody.position.x + _orientX * _cameraProfile._followOffsetX;
         if(IsTouchingGround && !IsJumping){
             _cameraFollowable.FollowPositionY = _rigidbody.position.y;
         }
